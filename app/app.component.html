@@ -1,0 +1,133 @@
+<h1>Draggable</h1>
+
+<h2>Basic draggable</h2>
+<p>A simple base directive to track drag events. Does no position but provides output events and CSS bindings.</p>
+
+<div class="box" appDraggable>
+  Box
+</div>
+
+<!-- <app-box appDraggable></app-box> -->
+
+<h2>Draggable with helper (content child)</h2>
+<p>A drag helper element can be provided with a structural directive. You can render the helper the way you like.</p>
+
+<div class="box" appDraggable (dragMove)="updatePosition($event)">
+  Box
+  <div class="box" *appDraggableHelper>
+    {{ currentPosition }}
+  </div>
+</div>
+
+<h2>Draggable with helper (input)</h2>
+<p>You can also provide a helper template as input.</p>
+
+<ng-template appDraggableHelper #helper="appDraggableHelper">
+  <div class="box">Helper</div>
+</ng-template>
+
+<div class="box" appDraggable [appDraggableWithHelper]="helper">
+  Box
+</div>
+
+<h2>Draggable with handle</h2>
+<p>The drag handle directive enables you to only drag when grabbing the handle.</p>
+
+<div class="box" appDraggable (dragMove)="updatePosition($event)">
+  Box
+  <div class="handle" appDraggableHandle>+</div>
+  <div class="box" *appDraggableHelper>
+    Box
+    <div class="handle">+</div>
+  </div>
+</div>
+
+<h2>Basic movable</h2>
+<p>A default movable directive which just transforms the position of the host element.</p>
+
+<div class="box" appMovable>
+  Box
+</div>
+
+<h2>Sortable list</h2>
+<p>The sortable list directive enabled you to change the order of a list. You can bind it to list, but also implement a custom callback. It supports every layout, even things like Flexbox row-reverse or wrapping rows.</p>
+
+<h3>Horizontal</h3>
+<ul [(appSortableList)]="sortableList" class="horizontal">
+	<div class="box" *ngFor="let box of sortableList" appSortable>
+		{{ box }}
+		<div class="box" *appDraggableHelper>{{ box }}</div>
+	</div>
+</ul>
+
+<h3>Same list but vertical and inversed</h3>
+
+<ul [(appSortableList)]="sortableList" class="inversed">
+	<div class="box" *ngFor="let box of sortableList" appSortable>
+		{{ box }}
+		<div class="box" *appDraggableHelper>{{ box }}</div>
+	</div>
+</ul>
+
+<h2>Sortable list with images</h2>
+<p>Same list but visualized with images.</p>
+
+<ng-container [(appSortableList)]="sortableList">
+	<img [attr.src]="'https://placehold.it/200x50?text=' + box" class="box" *ngFor="let box of sortableList" appSortable [appDraggableWithHelper]="imgHelper" />
+
+  <ng-template appDraggableHelper #imgHelper="appDraggableHelper">
+    <img src="https://placehold.it/200x50?text=Helper" class="box" />
+  </ng-template>
+</ng-container>
+
+ <h2>Dropzone</h2>
+
+<div appDroppableContainer>
+	<div *ngFor="let box of availableBoxes" class="box" [appDroppable]="box">
+		{{ box }}
+		<div class="box box-helper" *appDraggableHelper>{{ box }}</div>
+	</div>
+
+	<div class="dropzone" appDropzone (drop)="move($event.data, dropzone1)" (remove)="move($event.data, availableBoxes)">
+		<h3>Drop to add</h3>
+		<div *ngFor="let box of dropzone1" class="box" [appDroppable]="box">
+			{{ box }}
+			<div class="box" *appDraggableHelper>{{ box }}</div>
+		</div>
+	</div>
+
+	<div class="dropzone" appDropzone (drop)="move($event.data, dropzone2)" (remove)="move($event.data, availableBoxes)">
+		<h3>Drop to add</h3>
+		<div *ngFor="let box of dropzone2" class="box box-round"  [appDroppable]="box">
+			{{ box }}
+			<div class="box box-round" *appDraggableHelper>{{ box }}</div>
+		</div>
+	</div>
+</div>
+
+<h2>Connected sortable lists</h2>
+
+<p>Connect multiple sortable lists with these directives. You can render each list the way you want, even with different helper templates.</p>
+
+<div class="columns" appConnectedSortableLists>
+	<ul [(appConnectedSortableList)]="connectedList1">
+		<div class="box" *ngFor="let box of connectedList1; index as i" appSortable>
+			{{ box }} ({{ i }})
+			<div class="box" *appDraggableHelper>{{ box }} ({{ i }})</div>
+		</div>
+	</ul>
+
+	<ul [(appConnectedSortableList)]="connectedList2">
+		<div class="box box-round" *ngFor="let box of connectedList2; index as i" appSortable>
+			{{ box }} [{{ i }}]
+			<div class="box box-round" *appDraggableHelper>{{ box }} [{{ i }}]</div>
+		</div>
+	</ul>
+</div>
+
+<h3>Data</h3>
+
+<p>The underlaying model is continuously updated.</p>
+
+<pre>{{ connectedList1 | json }}</pre>
+<pre>{{ connectedList2 | json }}</pre>

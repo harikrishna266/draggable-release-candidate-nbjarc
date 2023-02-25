@@ -1,0 +1,36 @@
+/* Add application styles & imports to this file! */
+
+body {
+  font-family: Lato;
+}
+
+@import "~@angular/cdk/overlay";
+@include cdk-overlay();
+
+.draggable {
+  cursor: move;
+  user-select: none;
+}
+
+.cdk-overlay-pane {
+  cursor: move;
+}
+
+.draggable,
+.cdk-overlay-pane {
+  img {
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-drag: none;
+  }
+}
+
+.cdk-overlay-pane.animated {
+  transition: margin 300ms ease-in-out;
+}
+
+.movable:not(.dragging) {
+  transition: transform 300ms ease-in-out;
+}
